@@ -1,0 +1,182 @@
+body {
+    /* Bootstrap dark colour but with some transparency */
+    --dark-transparent-bg: rgba(var(--bs-dark-rgb), 0.8);
+}
+
+.navbar-collapse {
+    z-index: 2;
+}
+
+.map {
+    position: absolute;
+    /* Push map down below the navbar */
+    top: 56px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+}
+
+.map-search-container {
+    position: relative;
+    background: var(--dark-transparent-bg);
+    top: 0;
+    left: 0;
+    width: 260px;
+    margin: 10px 0 0 10px;
+    padding: 10px;
+    border-radius: 8px;
+    overflow: visible;
+}
+
+.geocoder {
+    position: relative;
+    margin: 10px 0 10px;
+}
+
+#returnbutton {
+    position: relative;
+    margin: 10px 0 10px;
+    width: 100%;
+}
+
+.map-data-container {
+    position: relative;
+    background: var(--dark-transparent-bg);
+    width: 260px;
+    top: 0;
+    left: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    overflow: visible;
+}
+
+.option-label {
+    font: 15px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    width: 95%;
+    padding-bottom: 8px;
+}
+
+.form-check-label {
+    font: 14px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.map-search-container {
+    position: relative;
+    /* Bootstrap dark colour but with some transparency */
+    background: rgba(33, 37, 41, 0.8);
+    top: 0;
+    left: 0;
+    width: 260px;
+    margin: 10px 0 0 10px;
+    padding: 10px;
+    border-radius: 8px;
+    overflow: visible;
+}
+
+.geocoder {
+    position: relative;
+    margin: 10px 0 10px;
+}
+
+#returnbutton {
+    position: relative;
+    margin: 10px 0 10px;
+    width: 100%;
+}
+
+.map-data-container {
+    position: relative;
+    background: var(--dark-transparent-bg);
+    width: 260px;
+    top: 0;
+    left: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    overflow: visible;
+}
+
+.hex-panel {
+    position: fixed;
+    top: 64px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--dark-transparent-bg);
+    padding: 10px 20px;
+    border-radius: 5px;
+    /* Ensure the mapbox collision point popup shows over the collision count for the area */
+    z-index: 1;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    /* Initially invisible */
+    /* Without this the map interacitivity under the panel */
+    /* Even if we used visibility we would need this when the panel was visible, so just set use visibility */
+    pointer-events: none;
+    /* Smooth fade in/out */
+    transition: opacity 0.3s ease;
+}
+
+/* Ensure the mapbox collision point popup shows over the collision count for the area */
+.mapboxgl-popup {
+    z-index: 99;
+}
+
+.legend {
+    position: absolute;
+    border-radius: 3px;
+    bottom: 0;
+    margin-bottom: 30px;
+    /*horizontal shadow, vertical shadow, size of shadow, color*/
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    font: 14px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    padding: 10px;
+    right: 10px;
+    z-index: 10;
+    background: var(--dark-transparent-bg);
+}
+
+.legend h4 {
+    margin: 0 0 10px;
+}
+
+.center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Need to override the background colour here instead of in the content itself
+ * so the padding also gets the bg colour */
+.mapboxgl-popup-content {
+    background-color: var(--bs-dark);
+}
+/* Colour of arrow under the popup */
+.mapboxgl-popup-tip {
+    border-top-color: var(--bs-dark) !important;
+}
+
+.legend-key {
+    border-radius: 50%;
+    height: 8px;
+    width: 8px;
+    display: inline-block;
+    margin-right: 2px;
+    /* Some of the colours are light so put a border */
+    border: 1px solid black;
+}
+
+.collision-point-key {
+    background-color: #0000ff;
+}
+
+.low-dens-key {
+    background-color: #fef0d9;
+}
+
+.high-dens-key {
+    background-color: #d7301f;
+}
