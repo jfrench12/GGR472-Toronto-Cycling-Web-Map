@@ -5,6 +5,7 @@ This repository contains code for a website for GGR472. Our final project involv
 
 ## Key repository contents (Needs to be updated)
 - `data/pedcyc_collision_06-21.geojson`: Data file containing point locations of road collisions involving pedestrian and cyclists between 2006 and 2021 in Toronto
+- `esa_unified_v3.shp`: Shapefile showing the area accessible within a 750 metre walk from TTC Subway stations
 - `index.html`: HTML file to render the map
 - `style.css`: CSS file for positioning the map interface, layout, style, and managing colours, etc.
 - `script.js`: JavaScript file that creates and visualizes and hexgrid map based on the collision data
