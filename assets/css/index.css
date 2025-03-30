@@ -53,14 +53,19 @@ body {
 }
 
 .option-label {
-    font: 15px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    width: 95%;
-    padding-bottom: 8px;
+    padding: 4px 0;
+    margin-right: 8px;
 }
 
-.form-check-label {
+.form-item-label {
     font: 14px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+}
+
+.overlay-style-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    gap: 16px;
 }
 
 .map-search-container {
@@ -94,12 +99,12 @@ body {
     top: 0;
     left: 10px;
     margin-top: 10px;
-    padding: 10px;
+    padding: 0 10px 10px;
     border-radius: 8px;
     overflow: visible;
 }
 
-.hex-panel {
+.infoPanel {
     position: fixed;
     top: 64px;
     left: 50%;
@@ -107,7 +112,7 @@ body {
     background: var(--dark-transparent-bg);
     padding: 10px 20px;
     border-radius: 5px;
-    /* Ensure the mapbox collision point popup shows over the collision count for the area */
+    /* Ensure the mapbox station point popup shows over the station count for the area */
     z-index: 1;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     opacity: 0;
@@ -119,7 +124,7 @@ body {
     transition: opacity 0.3s ease;
 }
 
-/* Ensure the mapbox collision point popup shows over the collision count for the area */
+/* Ensure the mapbox station point popup shows over the station count for the area */
 .mapboxgl-popup {
     z-index: 99;
 }
@@ -154,6 +159,7 @@ body {
 .mapboxgl-popup-content {
     background-color: var(--bs-dark);
 }
+
 /* Colour of arrow under the popup */
 .mapboxgl-popup-tip {
     border-top-color: var(--bs-dark) !important;
@@ -169,8 +175,20 @@ body {
     border: 1px solid black;
 }
 
-.collision-point-key {
+.station-point-key {
     background-color: #0000ff;
+}
+
+.cycling-network-key {
+    background-color: orange;
+}
+
+.service-area-5min-key {
+    background-color: #b3e5fc;
+}
+
+.service-area-10min-key {
+    background-color: #00796b;
 }
 
 .low-dens-key {
