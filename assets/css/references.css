@@ -1,0 +1,31 @@
+h1 {
+    color: green
+}
+
+/* table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+} */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid green !important; /* Force a solid outer border */
+}
+
+/* Apply borders to all cells */
+th, td {
+    border: 2px solid rgb(198, 132, 10) !important; /* Force visibility */
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: green;
+}
