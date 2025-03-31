@@ -49,6 +49,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="contact.html">Contact</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="references.html">References</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -120,7 +123,7 @@
 
         <!-- Checkbox to show/hide service area -->
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="serviceareacheck" checked>
+            <input class="form-check-input" type="checkbox" value="" id="serviceareacheck">
             <label class="form-check-label" for="serviceareacheck">Show service areas</label>
         </div>
 
@@ -135,6 +138,12 @@
             <input class="form-check-input" type="checkbox" value="" id="legendcheck" checked>
             <label class="form-check-label" for="legendcheck">Show legend</label>
         </div>
+
+        <!-- Slider for station buffer size -->
+        <div class="mt-3">
+            <label for="bufferSizeSlider" class="form-label">Buffer size: <span id="bufferSizeText">250</span> meters</label>
+            <input type="range" class="form-range" min="0" max="500" value="250" id="bufferSizeSlider">
+        </div>
     </div>
 
     <!-- Div to show data for the hovered hex/neighbourhood -->
@@ -145,6 +154,9 @@
         <h4 class="legend-row center">Legend</h4>
         <div id="stationsLegend">
             <div class="legend-key station-point-key"></div>Bikeshare station
+        </div>
+        <div id="bufferLegend">
+            <div class="legend-key buffer-key"></div>Buffer around stations
         </div>
         <div id="cyclingNetworkLegend">
             <div class="legend-key cycling-network-key"></div>Cycling network

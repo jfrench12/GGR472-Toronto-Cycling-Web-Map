@@ -5,8 +5,8 @@
 mapboxgl.accessToken = "pk.eyJ1IjoiamZyZW5jaDUiLCJhIjoiY201eGVlNG42MDg5bjJub25nZjF3b3Y5eiJ9.i1clyXkpZVVJQ_iy-Jt7DQ"; // Mapbox public map token
 
 // Default map location data so we can reuse it on the reset button
-const defCenter = [-79.35, 43.7]; // Downtown Toronto [long, lat]
-const defZoom = 11;
+const defCenter = [-79.39, 43.72]; // Downtown Toronto [long, lat]
+const defZoom = 10.3;
 
 const MAP_QUARTILE_COLOURS = ["#fef0d9", "#fdcc8a", "#fc8d59", "#e34a33", "#d7301f"];
 const NEIGHBOURHOOD_FIXED_COLOUR = "grey"; // Default neighbourhood colour when not colour coding
@@ -53,7 +53,7 @@ document.getElementById("geocoder").appendChild(geocoder.onAdd(map));
 --------------------------------------------------------------------*/
 const bikeStationJsonPromise = fetch(
 	"https://raw.githubusercontent.com/jfrench12/GGR472-Toronto-Cycling-Web-Map/refs/heads/main/assets/geojson/bike-share-stations.geojson"
-).then((res) => res.json());
+).then((res) => console.log("Stations", res) || res.json());
 const neighbourhoodJsonPromise = fetch(
 	"https://raw.githubusercontent.com/jfrench12/GGR472-Toronto-Cycling-Web-Map/refs/heads/main/assets/geojson/NeighbourhoodsWithCluster.geojson"
 ).then(async (res) => {
@@ -168,6 +168,17 @@ function loadNeighbourhoodLayers(neighbourhoodJson) {
 			"line-width": 1, // Outline width
 		},
 	});
+}
+
+// Gets the feature collection for the buffers around the stations using turf.buffer
+function bufferedStations(stationData, bufferSize) {
+	return {
+		type: "FeatureCollection",
+		features: stationData.features.map((station) =>
+			// Buffer size is meters so need to divide by 1000
+			turf.buffer(station, bufferSize / 1000, { units: "kilometers" })
+		),
+	};
 }
 
 map.on("load", async () => {
@@ -306,6 +317,27 @@ map.on("load", async () => {
 			"line-color": "orange",
 			"line-width": 1,
 		},
+	});
+
+	// Add the buffered stations as a new source to your map
+	map.addSource("stations-buffer", {
+		type: "geojson",
+		data: bufferedStations(stationData, bufferSizeText.innerHTML),
+	});
+
+	// Add a layer to visualize the buffers
+	map.addLayer({
+		id: "stations-buffer-layer",
+		type: "fill",
+		source: "stations-buffer",
+		paint: {
+			"fill-color": "#ff00ff",
+			"fill-opacity": 0.2,
+		},
+		// Hide if buffer size 0
+		layout: {
+			visibility: bufferSizeText.innerHTML == 0 ? "none" : "visible",
+		}
 	});
 
 	/* Bike stations on map */
@@ -487,6 +519,7 @@ const clusterLegend = document.getElementById("clusterLegend");
 const stationsLegend = document.getElementById("stationsLegend");
 const cyclingNetworkLegend = document.getElementById("cyclingNetworkLegend");
 const neighbourhoodsLegendPropertyNames = [...document.querySelectorAll(".neighbourhoods-property-name")];
+const bufferSizeText = document.getElementById("bufferSizeText");
 
 // Create neighbourhood colour select dropdown items
 Object.entries(NEIGHBOURHOOD_FEATURES).forEach(([feature, name]) => {
@@ -594,6 +627,19 @@ function updateLegendForNeighbourhoodsFeature(featureName) {
 	}
 }
 
+// Updates the buffer size text and the buffer layer in the map
+async function setBufferSize(bufferSize) {
+	// Update the buffer size text
+	bufferSizeText.innerHTML = bufferSize;
+	// Update the existing mapbox source with the new buffered data
+	map.getSource("stations-buffer").setData(bufferedStations(await bikeStationJsonPromise, bufferSize));
+	// Calling the setLayoutProperty every time the slider changes was making it lag so only do it if visibility changed
+	const visibility = bufferSize == 0 ? "none" : "visible";
+	if (map.getLayoutProperty("stations-buffer-layer", "visibility") !== visibility) {
+		map.setLayoutProperty("stations-buffer-layer", "visibility", visibility);
+	}
+}
+
 /*--------------------------------------------------------------------
 	Add event listeners
 --------------------------------------------------------------------*/
@@ -609,6 +655,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	updateLegendForNeighbourhoodsFeature(neighbourhoodFeatSelect.value);
 	// Hide the legend option here before the map loads so the legend doesn't look glitchy
 	cyclingNetworkLegend.style.display = cyclingNetworkCheck.checked ? "block" : "none";
+	bufferSizeText.innerHTML = bufferSizeSlider.value;
 });
 
 // Add event listener which toggles overlay
@@ -640,3 +687,6 @@ neighbourhoodFeatSelect.addEventListener("change", (evt) => setNeighbourhoodsFea
 
 // Change display of cycling network based on checkbox
 cyclingNetworkCheck.addEventListener("change", (e) => setCyclingNetworkVisible(e.target.checked));
+
+// When changing the buffer size, update the map
+document.getElementById("bufferSizeSlider").addEventListener("input", (evt) =>  setBufferSize(evt.target.value));
