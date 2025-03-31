@@ -5,8 +5,8 @@
 mapboxgl.accessToken = "pk.eyJ1IjoiamZyZW5jaDUiLCJhIjoiY201eGVlNG42MDg5bjJub25nZjF3b3Y5eiJ9.i1clyXkpZVVJQ_iy-Jt7DQ"; // Mapbox public map token
 
 // Default map location data so we can reuse it on the reset button
-const defCenter = [-79.35, 43.7]; // Downtown Toronto [long, lat]
-const defZoom = 11;
+const defCenter = [-79.39, 43.72]; // Downtown Toronto [long, lat]
+const defZoom = 10.3;
 
 const MAP_QUARTILE_COLOURS = ["#fef0d9", "#fdcc8a", "#fc8d59", "#e34a33", "#d7301f"];
 const NEIGHBOURHOOD_FIXED_COLOUR = "grey"; // Default neighbourhood colour when not colour coding
