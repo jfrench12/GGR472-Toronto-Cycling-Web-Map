@@ -1,4 +1,4 @@
-# GGR472 Final Project: Toronto Cycling Web Map
+# GGR472 Final Project: Toronto Cycling Web Map (Still needs data sources section)
  
 This repository contains code for a website for GGR472. Our final project involves active transit in Toronto, specifically cycling. This website will allow stakeholders such as policymakers and the public to analyze the distribution of active transit infrastructure throughout the city, whether the use case is finding areas in need of better service, or finding out how equipped your neighbourhood is for active transit use. 
 
