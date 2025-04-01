@@ -175,30 +175,37 @@ body {
     border: 1px solid black;
 }
 
+/* Legend key colours */
 .station-point-key {
     background-color: #0000ff;
 }
-
 .buffer-key {
     background-color: #ff00ff;
 }
-
 .cycling-network-key {
     background-color: orange;
 }
-
 .service-area-5min-key {
     background-color: #b3e5fc;
 }
-
 .service-area-10min-key {
     background-color: #00796b;
 }
-
 .low-dens-key {
     background-color: #fef0d9;
 }
-
 .high-dens-key {
     background-color: #d7301f;
+}
+.cluster-1-key {
+    background-color:#fbb4ae;
+}
+.cluster-2-key {
+    background-color: #ccebc5;
+}
+.cluster-3-key {
+    background-color: #ffffcc;
+}
+.cluster-4-key {
+    background-color: #fed9a6;
 }

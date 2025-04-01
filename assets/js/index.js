@@ -9,6 +9,7 @@ const defCenter = [-79.39, 43.72]; // Downtown Toronto [long, lat]
 const defZoom = 10.3;
 
 const MAP_QUARTILE_COLOURS = ["#fef0d9", "#fdcc8a", "#fc8d59", "#e34a33", "#d7301f"];
+const CLUSTER_COLORS = ["#fbb4ae", "#ccebc5", "#ffffcc", "#fed9a6"];
 const NEIGHBOURHOOD_FIXED_COLOUR = "grey"; // Default neighbourhood colour when not colour coding
 
 // Features which you can colour by, along with their names in the dropdown
@@ -18,11 +19,11 @@ const NEIGHBOURHOOD_FEATURES = {
 	BikeWalkPe: "Percentage of commuters using biking/walking",
 	Age15to24: "% population aged 15-24",
 	Age65plus: "% population aged 65+",
-	CarPerc: "% population using cars",
+	CarPerc: "Percentage of commuters using cars",
 	Join_Count: "Number of bikeshare stations",
-	Capacity: "Bikeshare capacity",
-	Commute15: "Commute15",
-	CLUSTER_ID: "Cluster",
+	Capacity: "Bikeshare station capacity",
+	Commute15: "Percentage of commutes under 15 minutes",
+	CLUSTER_ID: "K-means cluster analysis",
 	BikeCapN_1: "Capacity of stations per capita",
 	BikeNetAre: "Cycling network coverage",
 };
@@ -64,17 +65,26 @@ const neighbourhoodJsonPromise = fetch(
 	return json;
 });
 
-async function computeFeatureQuartiles(featureName) {
-	const neighbourhoodFeatures = await neighbourhoodJsonPromise;
-	const values = neighbourhoodFeatures.features.map((feat) => feat.properties[featureName]);
-	values.sort((a, b) => a - b);
-	return [
-		values[0],
-		values[Math.floor(values.length * 0.25)],
-		values[Math.floor(values.length * 0.5)],
-		values[Math.floor(values.length * 0.75)],
-		values[values.length - 1],
+// Returns the colours for mapbox to colour by quartile values
+function getQuartileColours(values) {
+	const sorted = values.toSorted((a, b) => a - b);
+	const quartiles = [
+		sorted[0],
+		sorted[Math.floor(sorted.length * 0.25)],
+		sorted[Math.floor(sorted.length * 0.5)],
+		sorted[Math.floor(sorted.length * 0.75)],
+		sorted[sorted.length - 1],
 	];
+	// Mapbox doesn't show correctly if any of the values are the same so only include colours where they are bigger
+	// than the previous quartile
+	const colours = [quartiles[0], MAP_QUARTILE_COLOURS[0]];
+	for (let i = 1; i < quartiles.length; i++) {
+		if (quartiles[i] > quartiles[i - 1]) {
+			colours.push(quartiles[i]);
+			colours.push(MAP_QUARTILE_COLOURS[i]);
+		}
+	}
+	return colours;
 }
 
 // Sets the colour for the neighbourhoods to use a given feature
@@ -88,39 +98,29 @@ async function setNeighbourhoodsFeature(featureName) {
 		return;
 	}
 
-	// For clusters, there are 4 clusters so use 4 fixed colours
+	// For clusters, use 4 fixed colours
 	if (featureName === "CLUSTER_ID") {
 		map.setPaintProperty("neighbourhoods-layer", "fill-color", [
 			"match",
 			["get", featureName],
 			1,
-			"#fbb4ae",
+			CLUSTER_COLORS[0],
 			2,
-			"#ccebc5",
+			CLUSTER_COLORS[1],
 			3,
-			"#ffffcc",
+			CLUSTER_COLORS[2],
 			4,
-			"#fed9a6",
+			CLUSTER_COLORS[3],
 			"transparent", // Default if no cluster ID
 		]);
 		return;
 	}
 
-	// Otherwise colour based on quartiles of the feature values
-	const quartiles = await computeFeatureQuartiles(featureName);
-	// The points must be strictly ascending, so
-	const colours = [quartiles[0], MAP_QUARTILE_COLOURS[0]];
-	for (let i = 1; i < quartiles.length; i++) {
-		if (quartiles[i] > quartiles[i - 1]) {
-			colours.push(quartiles[i]);
-			colours.push(MAP_QUARTILE_COLOURS[i]);
-		}
-	}
 	map.setPaintProperty("neighbourhoods-layer", "fill-color", [
 		"interpolate",
 		["linear"],
 		["get", featureName],
-		...colours,
+		...getQuartileColours((await neighbourhoodJsonPromise).features.map((feat) => feat.properties[featureName])),
 	]);
 }
 
@@ -204,7 +204,7 @@ map.on("load", async () => {
 	const hexGrid = turf.hexGrid(bboxscaled, 0.5, { units: "kilometers" });
 
 	const hexGridWithstations = turf.collect(hexGrid, stationData, "ID", "station_ids");
-	let maxstations = 0;
+	let maxStations = 0;
 	hexGridWithstations.features.forEach((feat, i) => {
 		feat.properties.capacity = 0;
 		// Add the capacities of all stations in this area
@@ -217,8 +217,8 @@ map.on("load", async () => {
 		}
 		feat.properties.count = feat.properties.station_ids.length;
 		feat.id = i; // Need this for the hover transparency
-		if (feat.properties.count > maxstations) {
-			maxstations = feat.properties.count;
+		if (feat.properties.count > maxStations) {
+			maxStations = feat.properties.count;
 		}
 	});
 
@@ -227,6 +227,7 @@ map.on("load", async () => {
 		type: "geojson",
 		data: hexGridWithstations,
 	});
+
 
 	// Add a layer for the hexgrid with a fill color expression based on the 'count' property.
 	map.addLayer({
@@ -239,16 +240,10 @@ map.on("load", async () => {
 				"interpolate",
 				["linear"],
 				["get", "count"],
-				0,
-				"#fef0d9",
-				maxstations * 0.25,
-				"#fdcc8a",
-				maxstations * 0.5,
-				"#fc8d59",
-				maxstations * 0.75,
-				"#e34a33",
-				maxstations,
-				"#d7301f",
+				// We don't show hexes with 0 capacity so don't include them in the quartile claculation
+				...getQuartileColours(
+					hexGridWithstations.features.map((feat) => feat.properties.count).filter((val) => val !== 0)
+				),
 			],
 			// Make the hovered hexagon more transparent
 			// Also make everything more transparent as you zoom in (to better see detail)
@@ -437,6 +432,10 @@ map.on("mousemove", "neighbourhoods-layer", (e) => {
 		infoPanel.innerHTML += `<br><b>${NEIGHBOURHOOD_FEATURES[selectedFeature]}</b>: ${
 			e.features[0].properties[selectedFeature] ?? "Unknown"
 		}`;
+		// For clusters also show the info about the neighbourhood's cluster
+		if (selectedFeature === "CLUSTER_ID") {
+			infoPanel.innerHTML += ` (${e.features[0].properties.ClusterInf})`;
+		}
 	}
 
 	// Show the hex info panel (using opacity for nicer animation)
@@ -557,7 +556,7 @@ function updateOverlaySettings() {
 		document.getElementById("neighbourhoodColourLabel").classList.remove("text-secondary");
 	}
 	if (enableOverlay) {
-		updateLegendForNeighbourhoodsFeature(neighbourhoodFeatSelect.value);
+		updateLegendForNeighbourhoodsFeature(neighbourhoodsRadio.checked ? neighbourhoodFeatSelect.value : "hex");
 	} else {
 		updateLegendForNeighbourhoodsFeature("None");
 	}
@@ -613,17 +612,35 @@ function setServiceAreaVisible(visible) {
 
 // Updates the legend for the selected neighbourhoods feature
 function updateLegendForNeighbourhoodsFeature(featureName) {
-	neighbourhoodsLegend.style.display = featureName === "None" ? "none" : "block";
-	if (featureName === "cluster") {
+	neighbourhoodsLegend.style.display = featureName === "None" || featureName === "CLUSTER_ID" ? "none" : "block";
+	// Clusters have their own legend
+	if (featureName === "CLUSTER_ID") {
 		clusterLegend.style.display = "block";
 	} else {
+		// Otherwise use the normal legend
 		clusterLegend.style.display = "none";
-		neighbourhoodsLegendPropertyNames.forEach(
-			(legendProp) =>
-				(legendProp.innerHTML = Object.entries(NEIGHBOURHOOD_FEATURES)
-					.find(([feat]) => feat === featureName)[1]
-					.toLowerCase())
-		);
+		// For hex, the feature name is "station capacity"
+		// For non-hex, find the feature name from the NEIGHBOURHOOD_FEATURES
+		const label =
+			featureName === "hex"
+				? "station capacity"
+				: Object.entries(NEIGHBOURHOOD_FEATURES)
+						.find(([key]) => key === featureName)[1]
+						.toLowerCase();
+		neighbourhoodsLegendPropertyNames.forEach((legendProperty) => (legendProperty.innerHTML = label));
+	}
+}
+
+// Updates the buffer size text and the buffer layer in the map
+async function setBufferSize(bufferSize) {
+	// Update the buffer size text
+	bufferSizeText.innerHTML = bufferSize;
+	// Update the existing mapbox source with the new buffered data
+	map.getSource("stations-buffer").setData(bufferedStations(await bikeStationJsonPromise, bufferSize));
+	// Calling the setLayoutProperty every time the slider changes was making it lag so only do it if visibility changed
+	const visibility = bufferSize == 0 ? "none" : "visible";
+	if (map.getLayoutProperty("stations-buffer-layer", "visibility") !== visibility) {
+		map.setLayoutProperty("stations-buffer-layer", "visibility", visibility);
 	}
 }
 
@@ -652,7 +669,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	updateOverlaySettings();
 	// Only show service area legend keys if service area enabled
 	serviceAreaLegend.style.display = serviceAreaCheck.checked ? "block" : "none";
-	updateLegendForNeighbourhoodsFeature(neighbourhoodFeatSelect.value);
+	updateLegendForNeighbourhoodsFeature(neighbourhoodsRadio.checked ? neighbourhoodFeatSelect.value : "hex");
 	// Hide the legend option here before the map loads so the legend doesn't look glitchy
 	cyclingNetworkLegend.style.display = cyclingNetworkCheck.checked ? "block" : "none";
 	bufferSizeText.innerHTML = bufferSizeSlider.value;
