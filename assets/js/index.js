@@ -310,12 +310,12 @@ map.on("load", async () => {
 			"line-cap": "round",
 		},
 		paint: {
-			"line-color": "yellow",
-			"line-width": 2,
+			"line-color": "#FCE803",
+			"line-width": 1,
 		},
 	});
 
-	// Add the buffered stations as a new source to your map
+	// Add the buffered stations as a new source to map
 	map.addSource("stations-buffer", {
 		type: "geojson",
 		data: bufferedStations(stationData, bufferSizeText.innerHTML),
@@ -327,7 +327,7 @@ map.on("load", async () => {
 		type: "fill",
 		source: "stations-buffer",
 		paint: {
-			"fill-color": "#ff00ff",
+			"fill-color": "#00CCCC",
  			"fill-opacity": 0.2,
 			// "fill-color": "#009FA8",
 			// "fill-opacity": 0.4,
