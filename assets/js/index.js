@@ -15,18 +15,18 @@ const NEIGHBOURHOOD_FIXED_COLOUR = "grey"; // Default neighbourhood colour when 
 
 // Features which you can colour by, along with their names in the dropdown
 const NEIGHBOURHOOD_FEATURES = {
-	None: "Constant",
-	Median_tot: "Median total income",
-	BikeWalkPe: "Percentage of commuters using biking/walking",
-	Age15to24: "% population aged 15-24",
-	Age65plus: "% population aged 65+",
-	CarPerc: "Percentage of commuters using cars",
-	Join_Count: "Number of bikeshare stations",
+	None: "No colour",
 	Capacity: "Bikeshare station capacity",
-	Commute15: "Percentage of commutes under 15 minutes",
-	CLUSTER_ID: "K-means cluster analysis",
 	BikeCapN_1: "Capacity of stations per capita",
 	BikeNetAre: "Cycling network coverage",
+	CLUSTER_ID: "K-means cluster analysis",
+	Median_tot: "Median total income",
+	Join_Count: "Number of bikeshare stations",
+	BikeWalkPe: "Percentage of commuters using biking/walking",
+	CarPerc: "Percentage of commuters using cars",
+	Commute15: "Percentage of commutes under 15 minutes",
+	Age15to24: "Percentage population aged 15-24",
+	Age65plus: "Percentage population aged 65+",
 };
 
 // Initialize map
