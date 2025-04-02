@@ -8,7 +8,7 @@ mapboxgl.accessToken = "pk.eyJ1IjoiamZyZW5jaDUiLCJhIjoiY201eGVlNG42MDg5bjJub25nZ
 const defCenter = [-79.39, 43.72]; // Downtown Toronto [long, lat]
 const defZoom = 10.3;
 
-const MAP_QUARTILE_COLOURS = ["#fef0d9", "#fdcc8a", "#fc8d59", "#e34a33", "#d7301f"];
+const MAP_QUARTILE_COLOURS = ["##85C4C9", "#68ABB8", "#4F90A6", "#3B738F", "#2A5674"];
 const CLUSTER_COLORS = ["#fbb4ae", "#ccebc5", "#ffffcc", "#fed9a6"];
 const NEIGHBOURHOOD_FIXED_COLOUR = "grey"; // Default neighbourhood colour when not colour coding
 
@@ -326,8 +326,8 @@ map.on("load", async () => {
 		type: "fill",
 		source: "stations-buffer",
 		paint: {
-			"fill-color": "#ff00ff",
-			"fill-opacity": 0.2,
+			"fill-color": "#009FA8",
+			"fill-opacity": 0.4,
 		},
 		// Hide if buffer size 0
 		layout: {
