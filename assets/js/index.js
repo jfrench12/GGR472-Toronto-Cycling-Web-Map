@@ -310,8 +310,8 @@ map.on("load", async () => {
 			"line-cap": "round",
 		},
 		paint: {
-			"line-color": "orange",
-			"line-width": 1,
+			"line-color": "yellow",
+			"line-width": 2,
 		},
 	});
 
