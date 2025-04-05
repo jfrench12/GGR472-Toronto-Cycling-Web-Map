@@ -311,7 +311,7 @@ map.on("load", async () => {
 		},
 		paint: {
 			"line-color": "#FCE803",
-			"line-width": 1,
+			"line-width": 2,
 		},
 	});
 

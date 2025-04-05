@@ -1,16 +1,16 @@
 h1 {
-    color: green
+    color: lightgreen !important; /* All important tags force visibility */
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    border: 2px solid green !important; /* Force a solid outer border */
+    border: 2px solid green !important; 
 }
 
 /* Apply borders to all cells */
 th, td {
-    border: 2px solid rgb(198, 132, 10) !important; /* Force visibility */
+    border: 2px solid rgb(198, 132, 10) !important; 
     padding: 8px;
     text-align: left;
 }
