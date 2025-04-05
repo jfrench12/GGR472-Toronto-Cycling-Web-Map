@@ -12,6 +12,8 @@ const defZoom = 10.3;
 const MAP_QUARTILE_COLOURS = ["#fef0d9", "#fdcc8a", "#fc8d59", "#e34a33", "#d7301f"];
 const CLUSTER_COLORS = ["#fbb4ae", "#ccebc5", "#ffffcc", "#fed9a6"];
 const NEIGHBOURHOOD_FIXED_COLOUR = "grey"; // Default neighbourhood colour when not colour coding
+const STYLE_SATELLITE = "mapbox://styles/jfrench5/cm6vcs0z1002m01s3cfz02880";
+const STYLE_DEFAULT = "mapbox://styles/jfrench5/cm94m3n2w008601qt62bf163d";
 
 // Features which you can colour by, along with their names in the dropdown
 const NEIGHBOURHOOD_FEATURES = {
@@ -30,9 +32,11 @@ const NEIGHBOURHOOD_FEATURES = {
 };
 
 // Initialize map
+const satelliteCheck = document.getElementById("satellitecheck"); // Need this to know which style to use to start
 const map = new mapboxgl.Map({
 	container: "map", // container id in HTML
-	style: "mapbox://styles/jfrench5/cm6vcs0z1002m01s3cfz02880", // Custom style using satellite image
+	style: satelliteCheck.checked ? STYLE_SATELLITE : STYLE_DEFAULT,
+	minZoom: 10, // Minimum zoom level
 	center: defCenter, // starting point
 	zoom: defZoom, // starting zoom level
 });
@@ -55,7 +59,7 @@ document.getElementById("geocoder").appendChild(geocoder.onAdd(map));
 --------------------------------------------------------------------*/
 const bikeStationJsonPromise = fetch(
 	"https://raw.githubusercontent.com/jfrench12/GGR472-Toronto-Cycling-Web-Map/refs/heads/main/assets/geojson/bike-share-stations.geojson"
-).then((res) => console.log("Stations", res) || res.json());
+).then((res) => res.json());
 const neighbourhoodJsonPromise = fetch(
 	"https://raw.githubusercontent.com/jfrench12/GGR472-Toronto-Cycling-Web-Map/refs/heads/main/assets/geojson/NeighbourhoodsWithCluster.geojson"
 ).then(async (res) => {
@@ -182,7 +186,8 @@ function bufferedStations(stationData, bufferSize) {
 	};
 }
 
-map.on("load", async () => {
+// Code to initialize the map on load, kept in a separate function so we can also call it when the style changes
+async function loadMapLayers() {
 	/* Neighbourhoods */
 	// Wait to finish downloading the neighboorhood geojson
 	const neighbourhoodJson = await neighbourhoodJsonPromise;
@@ -228,7 +233,6 @@ map.on("load", async () => {
 		type: "geojson",
 		data: hexGridWithstations,
 	});
-
 
 	// Add a layer for the hexgrid with a fill color expression based on the 'count' property.
 	map.addLayer({
@@ -328,14 +332,14 @@ map.on("load", async () => {
 		source: "stations-buffer",
 		paint: {
 			"fill-color": "#00CCCC",
- 			"fill-opacity": 0.2,
+			"fill-opacity": 0.2,
 			// "fill-color": "#009FA8",
 			// "fill-opacity": 0.4,
 		},
 		// Hide if buffer size 0
 		layout: {
 			visibility: bufferSizeText.innerHTML == 0 ? "none" : "visible",
-		}
+		},
 	});
 
 	/* Bike stations on map */
@@ -372,7 +376,11 @@ map.on("load", async () => {
 	setServiceAreaVisible(serviceAreaCheck.checked);
 	setStationsVisible(stationCheck.checked);
 	setCyclingNetworkVisible(cyclingNetworkCheck.checked);
-});
+}
+
+map.on("load", loadMapLayers);
+// Since changing the map style clears the layers we need to re-load them
+map.on("styledata", loadMapLayers);
 
 /*--------------------------------------------------------------------
 	Panel and opacity change when hovering the hexagons
@@ -522,6 +530,9 @@ const stationsLegend = document.getElementById("stationsLegend");
 const cyclingNetworkLegend = document.getElementById("cyclingNetworkLegend");
 const neighbourhoodsLegendPropertyNames = [...document.querySelectorAll(".neighbourhoods-property-name")];
 const bufferSizeText = document.getElementById("bufferSizeText");
+const bufferLegend = document.getElementById("bufferLegend");
+const bufferSizeSlider = document.getElementById("bufferSizeSlider");
+let instructionsModal = null; // Loaded when page loads
 
 // Create neighbourhood colour select dropdown items
 Object.entries(NEIGHBOURHOOD_FEATURES).forEach(([feature, name]) => {
@@ -553,10 +564,12 @@ function updateOverlaySettings() {
 	});
 	// Disable neighbourhood colour option when overlay disabled or in hex mode
 	neighbourhoodFeatSelect.disabled = !enableOverlay || mode === "hex";
-	if (mode === "hex") {
+	if (mode === "hex" || !enableOverlay) {
 		document.getElementById("neighbourhoodColourLabel").classList.add("text-secondary");
+		neighbourhoodFeatSelect.style.opacity = 0.5;
 	} else {
 		document.getElementById("neighbourhoodColourLabel").classList.remove("text-secondary");
+		neighbourhoodFeatSelect.style.opacity = 1;
 	}
 	if (enableOverlay) {
 		updateLegendForNeighbourhoodsFeature(neighbourhoodsRadio.checked ? neighbourhoodFeatSelect.value : "hex");
@@ -645,19 +658,7 @@ async function setBufferSize(bufferSize) {
 	if (map.getLayoutProperty("stations-buffer-layer", "visibility") !== visibility) {
 		map.setLayoutProperty("stations-buffer-layer", "visibility", visibility);
 	}
-}
-
-// Updates the buffer size text and the buffer layer in the map
-async function setBufferSize(bufferSize) {
-	// Update the buffer size text
-	bufferSizeText.innerHTML = bufferSize;
-	// Update the existing mapbox source with the new buffered data
-	map.getSource("stations-buffer").setData(bufferedStations(await bikeStationJsonPromise, bufferSize));
-	// Calling the setLayoutProperty every time the slider changes was making it lag so only do it if visibility changed
-	const visibility = bufferSize == 0 ? "none" : "visible";
-	if (map.getLayoutProperty("stations-buffer-layer", "visibility") !== visibility) {
-		map.setLayoutProperty("stations-buffer-layer", "visibility", visibility);
-	}
+	bufferLegend.style.display = bufferSize == 0 ? "none" : "block";
 }
 
 /*--------------------------------------------------------------------
@@ -676,6 +677,14 @@ document.addEventListener("DOMContentLoaded", () => {
 	// Hide the legend option here before the map loads so the legend doesn't look glitchy
 	cyclingNetworkLegend.style.display = cyclingNetworkCheck.checked ? "block" : "none";
 	bufferSizeText.innerHTML = bufferSizeSlider.value;
+	bufferLegend.style.display = bufferSizeSlider.value == 0 ? "none" : "block";
+
+	instructionsModal = new bootstrap.Modal(document.getElementById("instructionsModal"));
+	// Only show instructions first time
+	if (!localStorage.getItem("instructionsShown")) {
+		instructionsModal.show();
+		localStorage.setItem("instructionsShown", "true");
+	}
 });
 
 // Add event listener which toggles overlay
@@ -709,4 +718,8 @@ neighbourhoodFeatSelect.addEventListener("change", (evt) => setNeighbourhoodsFea
 cyclingNetworkCheck.addEventListener("change", (e) => setCyclingNetworkVisible(e.target.checked));
 
 // When changing the buffer size, update the map
-document.getElementById("bufferSizeSlider").addEventListener("input", (evt) =>  setBufferSize(evt.target.value));
+bufferSizeSlider.addEventListener("input", (evt) => setBufferSize(evt.target.value));
+
+document.getElementById("helpButton").addEventListener("click", () => instructionsModal.show());
+
+satelliteCheck.addEventListener("change", (e) => map.setStyle(e.target.checked ? STYLE_SATELLITE : STYLE_DEFAULT));

@@ -209,3 +209,40 @@ body {
 .cluster-4-key {
     background-color: #fed9a6;
 }
+
+/* Hover for help icon in navbar */
+a.nav-help-icon {
+    font-size: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    opacity: 0.5;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    background-color: transparent;
+}
+a.nav-help-icon:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    opacity: 1 !important;
+    cursor: pointer;
+}
+
+/* Make the buffer size the same width regardless of value */
+.buffer-size {
+    display: inline-block;
+    width: 84px;
+    text-wrap: nowrap;
+}
+
+/* Make the image in the navbar fit in better */
+.navbar-brand {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 8px;
+    img {
+        height: 32px;
+    }
+}

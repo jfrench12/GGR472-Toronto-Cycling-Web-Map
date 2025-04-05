@@ -1,3 +1,18 @@
 h1 {
-    color: lightgreen !important; /* All important tags force visibility */
+    color: lightgreen; /* All important tags force visibility */
+}
+
+h2 {
+    color: #8BB381; /* All important tags force visibility */
+}
+
+/* Make the image in the navbar fit in better */
+.navbar-brand {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 8px;
+    img {
+        height: 32px;
+    }
 }

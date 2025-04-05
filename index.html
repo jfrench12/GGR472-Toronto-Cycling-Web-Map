@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | GGR472 Project</title>
+    <title>Active Transit Toronto</title>
     <!-- mapbox API -->
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.10.0/mapbox-gl.css" rel="stylesheet" />
@@ -15,13 +15,13 @@
     <link rel="stylesheet"
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css"
         type="text/css">
-    <!-- CSS -->
-    <link rel="stylesheet" href="assets/css/index.css">
     <!-- Turf.js -->
     <script src="https://unpkg.com/@turf/turf@7.2.0/turf.min.js"></script>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/index.css">
     <!-- Browser icon -->
     <link rel="icon" href="assets/images/bike-icon.png" type="image/x-icon">
     <!-- Font awesome for icons -->
@@ -32,16 +32,19 @@
     <!-- Navigation bar using Bootstrap -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark rounded">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">GGR472</a>
-            <!-- Set navbar toggler for small screens -->
+            <a class="navbar-brand" href="#">
+                <img src="assets/images/bike-icon.png" alt="Active Transit Toronto logo">
+            </a>
+            <!-- Navbar toggle for small screens -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse bg-dark" id="navbarSupportedContent">
+                <!-- Page links -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <!-- Links in nav bar -->
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>
@@ -55,9 +58,62 @@
                         <a class="nav-link" href="references.html">References</a>
                     </li>
                 </ul>
+                <!-- Help button to show instructions -->
+                <span class="nav-item">
+                    <a href="#" class="nav-link nav-help-icon text-light" id="helpButton" title="Help">
+                        <i class="fas fa-question-circle"></i>
+                    </a>
+                </span>
             </div>
         </div>
     </nav>
+
+
+    <!-- Instructions modal -->
+    <div class="modal fade" id="instructionsModal" tabindex="-1" aria-labelledby="instructionsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="instructionsModalLabel">Welcome to our active transit cycling web map! 🚲🚶</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">The various tools and options for the web map are located within the panel on the left portion of your screen. Specific details about each section can be found by hovering over the various help icons . </p>
+                    <div id="longInstructions" class="collapse">
+                        <div class="pt-3 border-top border-secondary">
+                            <p class="mb-2"><strong>✅ Overlay</strong></p>
+                            <p class="mb-3">
+                                The overlay option allows users to enable or disable the visibility of either the current neighbourhood choropleth or the hex map.
+                            </p>
+							<p class="mb-2"><strong>✂️ Overlay type</strong></p>
+                            <p class="mb-3">
+                                Overlay type allows users to select between the neighbourhood choropleth layer or the hex map.
+                            </p>
+                            <p class="mb-2"><strong>🖍 Colour neighbourhoods by</strong></p>
+                            <p class="mb-3">
+                                The "Colour neighbourhoods by" is a drop-down menu which allows users to select from a range of variables related to socioeconomic factors and transit within each neighbourhood in Toronto. The neighbourhood colours automatically update based on the value of the current variable selected.
+                            </p>
+
+                            <p class="mb-2"><strong>🛠 Layer options</strong></p>
+                            <p class="mb-0">
+                                The layer options section allows users to enable or disable a specific set of additional features as well as change the look of the map. <strong>Show bikeshare stations</strong> allows users to enable or disable the visibility of all bikeshare stations in Toronto. <strong>Show service areas</strong> toggles the walkable services area layer. This layer indicates the walkable distances based on both 5- and 10-minute walks for every bikeshare station in Toronto. The <strong>Satellite map</strong> option allows users to switch between the default basemap and satellite imagery to quickly identify physical structures or information not present within the stylized basemap. <strong>Show legend</strong> allows users to disable or enable the legend. 
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer border-0 d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Continue</button>
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse"
+                        data-bs-target="#longInstructions">
+                        View Full Instructions
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Div to show the info about the hovered neighbourhood/hex -->
     <div id="infoPanel" class="infoPanel"></div>
@@ -67,7 +123,7 @@
 
     <!-- Geocoder -->
     <div class="map-search-container">
-        <label class="option-label" for="geocoder">Search for location</label>
+        <h5 class="option-label">Search for location</h5>
         <div id="geocoder" class="geocoder"></div>
         <button type="button" class="btn btn-primary btn-sm" id="returnbutton">Return to full extent</button>
     </div>
@@ -104,7 +160,12 @@
         </div>
 
         <label class="option-label mt-0 overlay-option-label" id="neighbourhoodColourLabel">Colour neighbourhoods
-            by</label>
+            by
+            <span class="tooltip-icon ml-2" data-bs-toggle="tooltip" data-bs-placement="top"
+                title="Utilize this drop-down menu to select which variable to colour the neighbourhood layer by.">
+                <i class="fas fa-question-circle"></i>
+            </span>
+        </label>
         <select id="neighbourhoodcolourselect" name="boundary" class="form-select">
         </select>
 
@@ -135,6 +196,12 @@
             <label class="form-check-label" for="cyclingnetworkcheck">Show cycling network</label>
         </div>
 
+        <!-- Checkbox to use satellite map -->
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="satellitecheck">
+            <label class="form-check-label" for="satellitecheck">Satellite map</label>
+        </div>
+
         <!-- Checkbox to show/hide legend -->
         <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="legendcheck" checked>
@@ -143,9 +210,14 @@
 
         <!-- Slider for station buffer size -->
         <div class="mt-3">
-            <label for="bufferSizeSlider" class="form-label">Buffer size: <span id="bufferSizeText">250</span>
-                meters</label>
-            <input type="range" class="form-range" min="0" max="500" value="250" id="bufferSizeSlider">
+            <label for="bufferSizeSlider" class="form-label">Buffer size: <span class="buffer-size"><span id="bufferSizeText">250</span>
+                    meters</span>
+            </label>
+            <span class="tooltip-icon ml-2" data-bs-toggle="tooltip" data-bs-placement="top"
+                title="Manually adjust the buffer size for all stations from 0-500 meters by dragging the slider.">
+                <i class="fas fa-question-circle"></i>
+            </span>
+            <input type="range" class="form-range" min="0" max="500" value="0" id="bufferSizeSlider">
         </div>
     </div>
 

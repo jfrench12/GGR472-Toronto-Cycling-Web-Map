@@ -1,20 +1,53 @@
+
 h1 {
-    color: lightgreen !important; /* All important tags force visibility */
+    color: lightgreen;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    border: 2px solid green !important; 
+    border: 2px solid green !important;
 }
 
 /* Apply borders to all cells */
 th, td {
-    border: 2px solid rgb(198, 132, 10) !important; 
+    border: 2px solid rgb(198, 132, 10);
     padding: 8px;
     text-align: left;
 }
 
 th {
     background-color: green;
+}
+
+.content-section {
+    a {
+        color: #66FF66; /* Bright green for normal state */
+        text-decoration: none; /* Remove underline */
+    }
+
+    a:hover {
+        color: #39FF39; /* Slightly lighter green for hover state */
+        text-decoration: underline; /* Add underline on hover */
+    }
+
+    a:active {
+        color: #00FF00; /* Even brighter green for active state */
+    }
+
+    a:visited {
+        color: #66FF66; /* Keep the same bright green for visited state */
+        opacity: 0.8; /* Slightly fade visited links */
+    }
+}
+
+/* Make the image in the navbar fit in better */
+.navbar-brand {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 8px;
+    img {
+        height: 32px;
+    }
 }
