@@ -58,10 +58,10 @@ document.getElementById("geocoder").appendChild(geocoder.onAdd(map));
 	Load data
 --------------------------------------------------------------------*/
 const bikeStationJsonPromise = fetch(
-	"https://raw.githubusercontent.com/jfrench12/GGR472-Toronto-Cycling-Web-Map/refs/heads/main/assets/geojson/bike-share-stations.geojson"
+	"https://jfrench12.github.io/GGR472-Toronto-Cycling-Web-Map/assets/geojson/bike-share-stations.geojson"
 ).then((res) => res.json());
 const neighbourhoodJsonPromise = fetch(
-	"https://raw.githubusercontent.com/jfrench12/GGR472-Toronto-Cycling-Web-Map/refs/heads/main/assets/geojson/NeighbourhoodsWithCluster.geojson"
+	"https://jfrench12.github.io/GGR472-Toronto-Cycling-Web-Map/assets/geojson/NeighbourhoodsWithCluster.geojson"
 ).then(async (res) => {
 	const json = await res.json();
 	json.features.forEach((feature, index) => {
@@ -276,7 +276,7 @@ async function loadMapLayers() {
 	/* Station service area */
 	map.addSource("service-area", {
 		type: "geojson",
-		data: "https://raw.githubusercontent.com/jfrench12/GGR472-Toronto-Cycling-Web-Map/refs/heads/main/assets/geojson/StationServiceAreas.geojson",
+		data: "https://jfrench12.github.io/GGR472-Toronto-Cycling-Web-Map/assets/geojson/StationServiceAreas.geojson",
 	});
 
 	// Fill for the station service areas
@@ -303,7 +303,7 @@ async function loadMapLayers() {
 	/* Cycling network */
 	map.addSource("cycling-network", {
 		type: "geojson",
-		data: "https://raw.githubusercontent.com/jfrench12/GGR472-Toronto-Cycling-Web-Map/refs/heads/main/assets/geojson/m-cycling-network.geojson",
+		data: "https://jfrench12.github.io/GGR472-Toronto-Cycling-Web-Map/assets/geojson/m-cycling-network.geojson",
 	});
 	map.addLayer({
 		id: "cycling-network-layer",
