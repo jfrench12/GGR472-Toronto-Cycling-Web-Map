@@ -448,17 +448,17 @@ map.on("mousemove", "neighbourhoods-layer", (e) => {
 		}
 	}
 
-	// Show the hex info panel (using opacity for nicer animation)
+	// Show the info panel (using opacity for nicer animation)
 	infoPanel.style.opacity = 1;
 });
 
 // Reset the feature state and remove the popup when the mouse leaves the hexgrid layer.
 map.on("mouseleave", "neighbourhoods-layer", () => {
 	if (hoveredNeighbourhoodId !== null) {
-		map.setFeatureState({ source: "hexgrid", id: hoveredNeighbourhoodId }, { hover: false });
+		map.setFeatureState({ source: "neighbourhoods", id: hoveredNeighbourhoodId }, { hover: false });
 	}
 	hoveredNeighbourhoodId = null;
-	// Hide the hex info panel (using opacity for nicer animation)
+	// Hide the info panel (using opacity for nicer animation)
 	infoPanel.style.opacity = 0;
 });
 
