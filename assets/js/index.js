@@ -8,7 +8,6 @@ mapboxgl.accessToken = "pk.eyJ1IjoiamZyZW5jaDUiLCJhIjoiY201eGVlNG42MDg5bjJub25nZ
 const defCenter = [-79.39, 43.72]; // Downtown Toronto [long, lat]
 const defZoom = 10.3;
 
-// const MAP_QUARTILE_COLOURS = ["##85C4C9", "#68ABB8", "#4F90A6", "#3B738F", "#2A5674"];
 const MAP_QUARTILE_COLOURS = ["#fef0d9", "#fdcc8a", "#fc8d59", "#e34a33", "#d7301f"];
 const CLUSTER_COLORS = ["#fbb4ae", "#ccebc5", "#ffffcc", "#fed9a6"];
 const NEIGHBOURHOOD_FIXED_COLOUR = "grey"; // Default neighbourhood colour when not colour coding
@@ -533,6 +532,8 @@ const bufferSizeText = document.getElementById("bufferSizeText");
 const bufferLegend = document.getElementById("bufferLegend");
 const bufferSizeSlider = document.getElementById("bufferSizeSlider");
 let instructionsModal = null; // Loaded when page loads
+let modalOpenedManually = false; // Whether the modal was opened via the navbar button
+let helpTooltip;
 
 // Create neighbourhood colour select dropdown items
 Object.entries(NEIGHBOURHOOD_FEATURES).forEach(([feature, name]) => {
@@ -667,7 +668,15 @@ async function setBufferSize(bufferSize) {
 // After the page loads add bootstrap tooltips and update UI
 document.addEventListener("DOMContentLoaded", () => {
 	[...document.querySelectorAll('[data-bs-toggle="tooltip"]')].forEach(
-		(tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+		(tooltipTriggerEl) => {
+			// For the help button in the navbar, the tooltip only shows when they dismiss the modal
+			if (tooltipTriggerEl.id === "helpTooltip") {
+				helpTooltip = new bootstrap.Tooltip(tooltipTriggerEl, { trigger: "manual" });
+			} else {
+				// Other tooltips open on hover
+				new bootstrap.Tooltip(tooltipTriggerEl);
+			}
+		}
 	);
 	setLegendVisible(legendCheck.checked);
 	updateOverlaySettings();
@@ -680,6 +689,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	bufferLegend.style.display = bufferSizeSlider.value == 0 ? "none" : "block";
 
 	instructionsModal = new bootstrap.Modal(document.getElementById("instructionsModal"));
+
 	// Only show instructions first time
 	if (!localStorage.getItem("instructionsShown")) {
 		instructionsModal.show();
@@ -720,6 +730,18 @@ cyclingNetworkCheck.addEventListener("change", (e) => setCyclingNetworkVisible(e
 // When changing the buffer size, update the map
 bufferSizeSlider.addEventListener("input", (evt) => setBufferSize(evt.target.value));
 
-document.getElementById("helpButton").addEventListener("click", () => instructionsModal.show());
+document.getElementById("helpButton").addEventListener("click", () => {
+	instructionsModal.show();
+	modalOpenedManually = true;
+});
 
 satelliteCheck.addEventListener("change", (e) => map.setStyle(e.target.checked ? STYLE_SATELLITE : STYLE_DEFAULT));
+
+// When the instructions are dismissed and weren't opened manually, show a tooltip that they can be reopened
+document.getElementById("instructionsModal").addEventListener('hidden.bs.modal', (evt) => {
+	if (!modalOpenedManually) {
+		helpTooltip.show();
+		// Hide the tooltip after 3 seconds
+		setTimeout(() => helpTooltip.hide(), 3000);
+	}
+});

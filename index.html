@@ -60,8 +60,11 @@
                 </ul>
                 <!-- Help button to show instructions -->
                 <span class="nav-item">
-                    <a href="#" class="nav-link nav-help-icon text-light" id="helpButton" title="Help">
-                        <i class="fas fa-question-circle"></i>
+				    <a href="#" class="nav-link nav-help-icon text-light" id="helpButton" title="Help">
+						<!-- Tooltip which is shown when they close the instructions so they know how to reopen them -->
+                        <span class="tooltip-icon ml-2" data-bs-toggle="tooltip" data-bs-placement="left" title="Reopen the instructions at any time by clicking here" id="helpTooltip">
+							<i class="fas fa-question-circle"></i>
+			            </span>
                     </a>
                 </span>
             </div>
@@ -75,31 +78,29 @@
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title" id="instructionsModalLabel">Welcome to our active transit cycling web map! 🚲🚶</h5>
+                    <h5 class="modal-title" id="instructionsModalLabel">Welcome to Active Transit Toronto! 🚲🚶</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="mb-3">The various tools and options for the web map are located within the panel on the left portion of your screen. Specific details about each section can be found by hovering over the various help icons. </p>
+                    <p class="mb-3">Use this map to explore active transit in Toronto.<br>
+					You can change various options on the left.<br>
+					Hover on the <i class="fas fa-question-circle"></i> for more info about each option.
+					</p>
                     <div id="longInstructions" class="collapse">
                         <div class="pt-3 border-top border-secondary">
                             <p class="mb-2"><strong>✅ Overlay</strong></p>
                             <p class="mb-3">
-                                The overlay option allows users to enable or disable the visibility of either the current neighbourhood choropleth or the hex map.
-                            </p>
-							<p class="mb-2"><strong>✂️ Overlay type</strong></p>
-                            <p class="mb-3">
-                                Overlay type allows users to select between the neighbourhood choropleth layer or the hex map.
+                                Enable an overlay of a neighbourhood choropleth or the hex map.
                             </p>
                             <p class="mb-2"><strong>🖍 Colour neighbourhoods by</strong></p>
                             <p class="mb-3">
-                                The "Colour neighbourhoods by" is a drop-down menu which allows users to select from a range of variables related to socioeconomic factors and transit within each neighbourhood in Toronto. The neighbourhood colours automatically update based on the value of the current variable selected.
+                                Colour code the choropleth based on a range of variables related to socioeconomic factors and transit usage.
                             </p>
-
                             <p class="mb-2"><strong>🛠 Layer options</strong></p>
                             <p class="mb-0">
-                                The layer options section allows users to enable or disable a specific set of additional features as well as change the look of the map. <strong>Show bikeshare stations</strong> allows users to enable or disable the visibility of all bikeshare stations in Toronto. <strong>Show service areas</strong> toggles the walkable services area layer. This layer indicates the walkable distances based on both 5- and 10-minute walks for every bikeshare station in Toronto. The <strong>Satellite map</strong> option allows users to switch between the default basemap and satellite imagery to quickly identify physical structures or information not present within the stylized basemap. <strong>Show legend</strong> allows users to disable or enable the legend. 
-                            </p>
+                                Enable or disable additional information and customize the look of the map.
+							</p>
                         </div>
                     </div>
 
@@ -108,7 +109,7 @@
                     <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Continue</button>
                     <button type="button" class="btn btn-secondary" data-bs-toggle="collapse"
                         data-bs-target="#longInstructions">
-                        View Full Instructions
+                        Controls
                     </button>
                 </div>
             </div>
@@ -162,7 +163,7 @@
         <label class="option-label mt-0 overlay-option-label" id="neighbourhoodColourLabel">Colour neighbourhoods
             by
             <span class="tooltip-icon ml-2" data-bs-toggle="tooltip" data-bs-placement="top"
-                title="Utilize this drop-down menu to select which variable to colour the neighbourhood layer by.">
+                title="Select which variable to colour the neighbourhood layer by.">
                 <i class="fas fa-question-circle"></i>
             </span>
         </label>
@@ -173,7 +174,7 @@
         <div class="d-flex align-items-center mt-2">
             <h5 class="option-label mb-0">Layer options</h5>
             <span class="tooltip-icon ml-2" data-bs-toggle="tooltip" data-bs-placement="top"
-                title="Check a box below to toggle the visibility of various layers or elements on or off. Satellite map changes the basemap style.">
+                title="Check a box below to toggle the visibility of various layers or elements. Satellite map changes the basemap style.">
                 <i class="fas fa-question-circle"></i>
             </span>
         </div>
@@ -214,7 +215,7 @@
                     meters</span>
             </label>
             <span class="tooltip-icon ml-2" data-bs-toggle="tooltip" data-bs-placement="top"
-                title="Manually adjust the buffer size for all stations from 0-500 meters by dragging the slider.">
+                title="Add a buffer around bikeshare stations from 0-500 meters.">
                 <i class="fas fa-question-circle"></i>
             </span>
             <input type="range" class="form-range" min="0" max="500" value="0" id="bufferSizeSlider">
