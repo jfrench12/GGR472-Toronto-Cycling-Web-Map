@@ -547,7 +547,7 @@ Object.entries(NEIGHBOURHOOD_FEATURES).forEach(([feature, name]) => {
 	neighbourhoodFeatSelect.appendChild(option);
 });
 
-// Updates the
+// Updates the overlay settings eg disable irrelevant options and update legend 
 function updateOverlaySettings() {
 	const enableOverlay = overlayCheck.checked;
 	const mode = neighbourhoodsRadio.checked ? "neighbourhoods" : "hex";
