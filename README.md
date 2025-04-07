@@ -1,12 +1,15 @@
-# GGR472 Final Project: Toronto Cycling Web Map (Still needs data sources section)
+# GGR472 Final Project: Active Transit Toronto's Cycling Web Map
  
-This repository contains code for a website for GGR472. Our final project involves active transit in Toronto, specifically cycling. This website will allow stakeholders such as policymakers and the public to analyze the distribution of active transit infrastructure throughout the city, whether the use case is finding areas in need of better service, or finding out how equipped your neighbourhood is for active transit use. 
+This repository contains code for a website for GGR472. Our final project involves active transit in Toronto, specifically cycling. This website allows stakeholders such as policymakers and the public to analyze the distribution of active transit infrastructure throughout the city, whether the use case is finding areas in need of better service, or finding out how well-equipped your neighbourhood is for active transit use. 
 
 ## Purpose
-This web map was created to allow both policymakers and individuals to locate areas throughout the city of Toronto that lack access to active transit support, such as infrastructure. It was designed to be intuitive and useable without the need for comprehensive documentation or instructions within the map itself, allowing users to quickly acclimate to the various features within the map and utilize them to find communities which might require further active transit investment.
+This web map was created to allow both policymakers and individuals to locate areas throughout the city of Toronto that lack access to active transit support, such as infrastructure. It was designed to be intuitive and useable without the need for comprehensive documentation or detailed instructions, allowing users to quickly acclimate to the various features within the map and utilize them to find communities which might require further active transit investment.
+
+## Motivation/Background 
+Active transit use has been linked to numerous health benefits such as reduced prevalence of risk factors associated with cardiovascular disease. Additionally, active transit modes, such as cycling, are much more space efficient than automobiles. Active transit is highly sustainable, emitting no greenhouse gases, while single-occupancy vehicles account for a tremendous amount of greenhouse gas emissions and reduced air quality. Despite the health benefits associated with active transit use as well as greatly increase environmental sustainability and space efficiency, most commuters in Toronto still rely on the automobile. Spatial equity is key to city planning, yet many residents within Toronto lack choice of mode and must rely on automobiles due to commuting distances or lack of infrastructure which supports alternatives. 
 
 ## Instructions 
-Enable overlay allows users to completely hide the neighbourhood boundaries or hexgrid. Overlay type allows the user to pick between the neighbourhood boundaries or the hexgrid visualization of cycling station distribution. Select a relevant indicator through the 'colour by neighbourhood’ drop down menu. The layer options section allows users to toggle the visibility of the bikeshare stations, service areas, the cycling network, and the legend. The buffer size option allows users to set a manual buffer size for every bikeshare station of any value between 1 and 500 meters, with 0 disabling the buffer function entirely. 
+Enable overlay allows users to completely hide the neighbourhood boundaries or hexgrid. Overlay type allows the user to pick between the neighbourhood boundaries or the hexgrid visualization of cycling station distribution. Select a relevant indicator through the 'colour by neighbourhood’ drop-down menu. The layer options section allows users to toggle the visibility of the bikeshare stations, service areas, the cycling network, and the legend. Users can toggle the basemap theme between the default dark mode and satellite imagery. The buffer size option allows users to set a manual buffer size for every bikeshare station of any value between 1 and 500 meters, with 0 hiding the buffer. 
 
 ## Key repository contents
 - `assets/geojson`: A folder which contains the various geojson files used to create the visualizations within the map.
@@ -21,3 +24,11 @@ Enable overlay allows users to completely hide the neighbourhood boundaries or h
 - `contact.html`: A HTML file to render the references page, which includes links to the various sources used.
 - `assets/js/index.js`: A JavaScript file that creates and visualizes and hexgrid map based on bike share stations as well as the choropleth maps utilized to display census data, indicators, etc.
 - `assets/images`: A folder which contains the various images utilized within the website.
+
+## Main data sources used
+
+- [School of Cities - Bike Share Stations](https://github.com/schoolofcities/bike-share-toronto/blob/main/data-preparation/map/stations.geojson)
+- [City of Toronto - Toronto Cycling Network](https://open.toronto.ca/dataset/cycling-network/)
+- [City of Toronto - Toronto Neighbourhood Boundaries](https://open.toronto.ca/dataset/neighbourhoods/)
+- [City of Toronto - Toronto Neighbourhood Profiles](https://open.toronto.ca/dataset/neighbourhood-profiles/)
+
