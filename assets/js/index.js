@@ -332,8 +332,6 @@ async function loadMapLayers() {
 		paint: {
 			"fill-color": "#00CCCC",
 			"fill-opacity": 0.2,
-			// "fill-color": "#009FA8",
-			// "fill-opacity": 0.4,
 		},
 		// Hide if buffer size 0
 		layout: {
@@ -375,11 +373,14 @@ async function loadMapLayers() {
 	setServiceAreaVisible(serviceAreaCheck.checked);
 	setStationsVisible(stationCheck.checked);
 	setCyclingNetworkVisible(cyclingNetworkCheck.checked);
+	// The dropdown does reset on page load, but when changing styles the dropdown may have changed
+	// so ensure the neighbourhood colouring matches the dropdown selection
+	setNeighbourhoodsFeature(neighbourhoodFeatSelect.value);
 }
 
 map.on("load", loadMapLayers);
 // Since changing the map style clears the layers we need to re-load them
-map.on("styledata", loadMapLayers);
+map.on("style.load", loadMapLayers);
 
 /*--------------------------------------------------------------------
 	Panel and opacity change when hovering the hexagons
@@ -547,7 +548,7 @@ Object.entries(NEIGHBOURHOOD_FEATURES).forEach(([feature, name]) => {
 	neighbourhoodFeatSelect.appendChild(option);
 });
 
-// Updates the overlay settings eg disable irrelevant options and update legend 
+// Updates the overlay settings eg disable irrelevant options and update legend
 function updateOverlaySettings() {
 	const enableOverlay = overlayCheck.checked;
 	const mode = neighbourhoodsRadio.checked ? "neighbourhoods" : "hex";
@@ -667,17 +668,17 @@ async function setBufferSize(bufferSize) {
 --------------------------------------------------------------------*/
 // After the page loads add bootstrap tooltips and update UI
 document.addEventListener("DOMContentLoaded", () => {
-	[...document.querySelectorAll('[data-bs-toggle="tooltip"]')].forEach(
-		(tooltipTriggerEl) => {
-			// For the help button in the navbar, the tooltip only shows when they dismiss the modal
-			if (tooltipTriggerEl.id === "helpTooltip") {
-				helpTooltip = new bootstrap.Tooltip(tooltipTriggerEl, { trigger: "manual" });
-			} else {
-				// Other tooltips open on hover
-				new bootstrap.Tooltip(tooltipTriggerEl);
-			}
+	[...document.querySelectorAll('[data-bs-toggle="tooltip"]')].forEach((tooltipTriggerEl) => {
+		// For the help button in the navbar, set the tooltip trigger to not show on hover since we will manually
+		// show it when they dismiss the modal
+		// Need to save it in a variable to manually show it later
+		if (tooltipTriggerEl.id === "helpTooltip") {
+			helpTooltip = new bootstrap.Tooltip(tooltipTriggerEl, { trigger: "manual" });
+		} else {
+			// Other tooltips have default bootstrap tooltip behaviour
+			new bootstrap.Tooltip(tooltipTriggerEl);
 		}
-	);
+	});
 	setLegendVisible(legendCheck.checked);
 	updateOverlaySettings();
 	// Only show service area legend keys if service area enabled
@@ -738,7 +739,7 @@ document.getElementById("helpButton").addEventListener("click", () => {
 satelliteCheck.addEventListener("change", (e) => map.setStyle(e.target.checked ? STYLE_SATELLITE : STYLE_DEFAULT));
 
 // When the instructions are dismissed and weren't opened manually, show a tooltip that they can be reopened
-document.getElementById("instructionsModal").addEventListener('hidden.bs.modal', (evt) => {
+document.getElementById("instructionsModal").addEventListener("hidden.bs.modal", () => {
 	if (!modalOpenedManually) {
 		helpTooltip.show();
 		// Hide the tooltip after 3 seconds
