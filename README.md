@@ -21,7 +21,7 @@ Enable overlay allows users to completely hide the neighbourhood boundaries or h
 - `index.html`: A HTML file to render the map.
 - `about.html`: A HTML file to render the about page, which contains information about the map and background on it.
 - `contact.html`: A HTML file to render the contact page, which contains information about our group and contact info.
-- `contact.html`: A HTML file to render the references page, which includes links to the various sources used.
+- `references.html`: A HTML file to render the references page, which includes links to the various sources used.
 - `assets/js/index.js`: A JavaScript file that creates and visualizes and hexgrid map based on bike share stations as well as the choropleth maps utilized to display census data, indicators, etc.
 - `assets/images`: A folder which contains the various images utilized within the website.
 
