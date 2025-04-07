@@ -16,13 +16,14 @@ Enable overlay allows users to completely hide the neighbourhood boundaries or h
 - `assets/geojson/NeighbourhoodsWithCluster.geojson`: A geojson file which includes various indicators and variables created using ArcGIS Pro and the relevant census data, such as primary mode of commuting in each neighbourhood, income, and car use. 
 - `assets/geojson/StationServiceAreas.geojson`: A geojson file which includes walkable service areas created using network analysis in ArcGIS Pro. Includes both 5-minute (400m) and 10 minute (800m) networked buffers.
 - `assets/geojson/m-cycling-network.geojson`: A geojson file which includes the cycling network within Toronto.
+- `assets/geojson/bike-share-stations.geojson`: A geojson file which includes all bike share station locations and the capacity of each in Toronto.
 - `assets/css`: A folder which contains the various CSS files used within each page.
 - `assets/css/index.css`: A CSS file for positioning the map interface, layout, style, etc.
 - `index.html`: A HTML file to render the map.
 - `about.html`: A HTML file to render the about page, which contains information about the map and background on it.
 - `contact.html`: A HTML file to render the contact page, which contains information about our group and contact info.
 - `references.html`: A HTML file to render the references page, which includes links to the various sources used.
-- `assets/js/index.js`: A JavaScript file that creates and visualizes and hexgrid map based on bike share stations as well as the choropleth maps utilized to display census data, indicators, etc.
+- `assets/js/index.js`: A JavaScript file that creates and visualizes the various overlay and layer options as well as the hexgrid based on bike share stations and the choropleth utilized to display census data, indicators, etc.
 - `assets/images`: A folder which contains the various images utilized within the website.
 
 ## Main data sources used
